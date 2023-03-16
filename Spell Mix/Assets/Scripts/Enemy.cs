@@ -5,6 +5,7 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] private Collider mainCollider;
     [SerializeField] private Rigidbody[] voxelsRb;
+    [SerializeField] private Healthbar healthbar;
 
     public int health, maxHealth = 10;
 
@@ -13,20 +14,25 @@ public class Enemy : MonoBehaviour
         health = maxHealth;
         mainCollider = GetComponent<Collider>();
         voxelsRb = GetComponentsInChildren<Rigidbody>();
+
+        healthbar.UpdateHealthBar(maxHealth, health);
     }
 
     public void TakeDamage(int damageAmount)
     {
         health -= damageAmount;
+        healthbar.UpdateHealthBar(maxHealth, health);
 
-        if(health <= 0)
+        if (health <= 0)
         {
             for(int i = 0; i < voxelsRb.Length; i++)
-            {
+            {   
                 voxelsRb[i].isKinematic = false;
                 voxelsRb[i].AddExplosionForce(700, transform.position, 5f);
                 StartCoroutine(destroyDelay(voxelsRb[i].gameObject));
             }
+
+            Destroy(healthbar);
         }
     }
 

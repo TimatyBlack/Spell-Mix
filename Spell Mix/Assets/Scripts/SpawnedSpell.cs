@@ -34,7 +34,7 @@ public class SpawnedSpell : MonoBehaviour
             if(rb != null)
             {
                 rb.isKinematic = false;
-                rb.AddExplosionForce(1500 * dmg/2, transform.position, radius);
+                rb.AddExplosionForce(2000 * dmg/2, transform.position, radius);
             }
         }
         Instantiate(hitParticle, transform.position, Quaternion.identity);
