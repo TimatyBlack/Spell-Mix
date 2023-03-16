@@ -1,0 +1,45 @@
+using System.Collections;
+using UnityEngine;
+using DG.Tweening;
+public class Enemy : MonoBehaviour
+{
+    [SerializeField] private Collider mainCollider;
+    [SerializeField] private Rigidbody[] voxelsRb;
+
+    public int health, maxHealth = 10;
+
+    void Start()
+    {
+        health = maxHealth;
+        mainCollider = GetComponent<Collider>();
+        voxelsRb = GetComponentsInChildren<Rigidbody>();
+    }
+
+    public void TakeDamage(int damageAmount)
+    {
+        health -= damageAmount;
+
+        if(health <= 0)
+        {
+            for(int i = 0; i < voxelsRb.Length; i++)
+            {
+                voxelsRb[i].isKinematic = false;
+                voxelsRb[i].AddExplosionForce(700, transform.position, 5f);
+                StartCoroutine(destroyDelay(voxelsRb[i].gameObject));
+            }
+        }
+    }
+
+    IEnumerator destroyDelay(GameObject shatter)
+    {
+        yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
+
+        shatter.transform.DOScale(new Vector3(0, 0, 0), 0.5f)
+            .SetEase(Ease.InOutSine);
+
+        yield return new WaitForSeconds(2f);
+
+        Destroy(shatter);
+    }
+
+}
